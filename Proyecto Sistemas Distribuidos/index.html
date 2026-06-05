@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain Distributed Consensus Dashboard</title>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-gradients">
+        <div class="gradient-sphere sphere-1"></div>
+        <div class="gradient-sphere sphere-2"></div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Top Bar / Hero Header -->
+        <header class="top-bar">
+            <div class="brand">
+                <i class="fa-solid fa-cubes brand-icon"></i>
+                <div class="brand-text">
+                    <h1>LEDGER<span>CONSENSUS</span></h1>
+                    <p>Chat Distribuido sobre Sockets TCP</p>
+                </div>
+            </div>
+            
+            <div class="stats-panel">
+                <div class="stat-card">
+                    <div class="stat-icon icon-nodes"><i class="fa-solid fa-network-wired"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="stat-active-nodes">0</span>
+                        <span class="stat-label">Nodos Activos</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-blocks"><i class="fa-solid fa-link"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="stat-processed-blocks">0</span>
+                        <span class="stat-label">Ledger Consolidado</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-quorum"><i class="fa-solid fa-users-between-lines"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="stat-quorum">0</span>
+                        <span class="stat-label">Quórum Requerido</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon icon-status"><i class="fa-solid fa-circle-dot"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="stat-system-status">CONECTANDO</span>
+                        <span class="stat-label">Estado de Red</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-layout">
+            
+            <!-- Left Panel: Controls and Validators -->
+            <section class="left-panel">
+                <!-- Control Panel -->
+                <div class="glass-panel control-panel-card">
+                    <h2 class="panel-title"><i class="fa-solid fa-sliders"></i> Panel de Control</h2>
+                    <div class="control-actions">
+                        <button id="btn-start-pipeline" class="btn btn-primary">
+                            <i class="fa-solid fa-play"></i> Iniciar Pipeline
+                        </button>
+                        <button id="btn-corrupt-block" class="btn btn-danger">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Corromper Bloque
+                        </button>
+                        <button id="btn-reset-network" class="btn btn-warning">
+                            <i class="fa-solid fa-arrows-rotate"></i> Reiniciar Red
+                        </button>
+                    </div>
+                    <div class="corrupt-alert" id="corrupt-alert-badge" style="display: none;">
+                        <i class="fa-solid fa-biohazard"></i> Próxima inyección corrupta programada
+                    </div>
+                </div>
+
+                <!-- Validators Monitor -->
+                <div class="glass-panel validators-card">
+                    <h2 class="panel-title"><i class="fa-solid fa-microchip"></i> Nodos Validadores</h2>
+                    
+                    <!-- Formulario de Creación de Validadores -->
+                    <div class="validator-creator-form">
+                        <div class="input-group">
+                            <input type="text" id="new-val-name" placeholder="Nombre de Nodo" class="form-input">
+                            <select id="new-val-behavior" class="form-select">
+                                <option value="honest">Honesto</option>
+                                <option value="fail_integrity">Fallo Integridad</option>
+                                <option value="fail_puzzle">Fallo Acertijo</option>
+                            </select>
+                        </div>
+                        <button id="btn-add-validator" class="btn btn-accent btn-sm">
+                            <i class="fa-solid fa-plus"></i> Agregar Validador
+                        </button>
+                    </div>
+
+                    <div id="validators-container" class="validators-list">
+                        <div class="no-nodes">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                            <p>Esperando conexión de validadores...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Ledger visualizer and Terminal Console -->
+            <section class="right-panel">
+                
+                <!-- Ledger Visualizer -->
+                <div class="glass-panel ledger-card">
+                    <div class="ledger-header">
+                        <h2 class="panel-title"><i class="fa-solid fa-database"></i> Visualizador del Ledger (Cadena de Bloques)</h2>
+                        <span class="ledger-badge" id="active-candidate-badge" style="display: none;">
+                            <span class="pulse-dot"></span> Validando Candidato
+                        </span>
+                    </div>
+                    
+                    <div class="ledger-viewport">
+                        <div class="ledger-timeline" id="ledger-timeline">
+                            <!-- Genesis Block (always present or generated) -->
+                            <div class="blockchain-block genesis" id="genesis-block">
+                                <div class="block-glow"></div>
+                                <div class="block-header">
+                                    <span class="block-num">#0</span>
+                                    <span class="block-status ok">GÉNESIS</span>
+                                </div>
+                                <div class="block-body">
+                                    <div class="data-field">
+                                        <label>Data</label>
+                                        <span class="data-text">Bloque de inicialización de la red</span>
+                                    </div>
+                                    <div class="hash-field">
+                                        <label>Hash</label>
+                                        <span class="hash-text">0000000000000000000000000000000000000000000000000000000000000000</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Blocks will be appended here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Socket Console Logs -->
+                <div class="glass-panel console-card">
+                    <div class="console-header">
+                        <h2 class="panel-title"><i class="fa-solid fa-terminal"></i> Consola de Sockets en Tiempo Real (Relay Chat)</h2>
+                        <button id="btn-clear-console" class="btn btn-icon" title="Limpiar Consola">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                    <div class="console-feed" id="console-feed">
+                        <div class="console-line system">=== INICIALIZANDO MONITOR DE CANAL DE CHAT ===</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Web App JS -->
+    <script src="app.js"></script>
+</body>
+</html>
